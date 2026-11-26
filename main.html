@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="cs" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pivovar Rubín | Řemeslný český pivovar & Pivovarská hospoda</title>
+    <meta name="description" content="Pivovar Rubín – poctivé řemeslné pivo vařené s vášní podle tradičních českých receptur. Objevte náš rubínový ležák, navštivte pivovarskou hospodu nebo si rezervujte prohlídku varny.">
+    
+    <!-- Google Fonts: Playfair Display pro nadpisy s tradicí a Inter pro moderní čitelnost -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rubin: {
+                            DEFAULT: '#7A1C1C',
+                            light: '#9B2226',
+                            dark: '#521010',
+                        },
+                        gold: {
+                            DEFAULT: '#D4AF37',
+                            amber: '#E09F3E',
+                            light: '#F3E5AB',
+                        },
+                        cream: {
+                            DEFAULT: '#FDFBF7',
+                            dark: '#F4EFE6',
+                        },
+                        slate: {
+                            dark: '#1A1A1A',
+                            charcoal: '#262626',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-cream text-slate-dark font-sans antialiased selection:bg-rubin selection:text-cream overflow-x-hidden">
+
+    <!-- ==================== OVERĚNÍ VĚKU 18+ (MODAL) ==================== -->
+    <div id="ageGateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-dark/95 backdrop-blur-md p-4 transition-opacity duration-300">
+        <div class="bg-cream border-2 border-gold/50 rounded-2xl max-w-md w-full p-8 text-center shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-rubin via-gold to-rubin"></div>
+            
+            <!-- SVG Logo Emblem -->
+            <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-rubin/10 flex items-center justify-center border border-rubin/20">
+                <svg class="w-9 h-9 text-rubin" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L4 8.5L12 22L20 8.5L12 2ZM12 5.2L16.8 9.1L12 17.5L7.2 9.1L12 5.2Z"/>
+                </svg>
+            </div>
+
+            <span class="text-xs font-bold tracking-widest uppercase text-rubin">Pivovar Rubín</span>
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-slate-dark mt-1 mb-3">Vítejte v našem pivovaru</h2>
+            <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                Tyto webové stránky obsahují informace o alkoholických nápojích a jsou určeny výhradně osobám starším 18 let. Potvrďte prosím svůj věk.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <button onclick="confirmAge(true)" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-rubin hover:bg-rubin-light text-cream font-semibold transition shadow-lg shadow-rubin/25 cursor-pointer">
+                    Ano, je mi 18 a více let
+                </button>
+                <button onclick="confirmAge(false)" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-cream-dark hover:bg-stone-200 text-slate-700 font-medium transition cursor-pointer">
+                    Ne, odejít
+                </button>
+            </div>
+            <p id="ageWarningMsg" class="hidden mt-4 text-xs font-medium text-rubin-light">
+                Omlouváme se, ale vstup na stránky je povolen pouze zletilým osobám.
+            </p>
+        </div>
+    </div>
+
+    <!-- ==================== NOTIFIKAČNÍ BANNER (TOAST) ==================== -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none max-w-sm w-full px-4 sm:px-0">
+        <div class="bg-slate-dark text-cream border-l-4 border-gold rounded-xl shadow-2xl p-4 flex items-start gap-3">
+            <div class="text-gold mt-0.5">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h4 id="toastTitle" class="font-semibold text-sm text-gold">Oznámení</h4>
+                <p id="toastMessage" class="text-xs text-stone-300 mt-1">Akce byla úspěšně provedena.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== NAVIGACE ==================== -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-slate-dark/90 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rubin to-rubin-dark border border-gold/40 flex items-center justify-center shadow-md group-hover:scale-105 transition">
+                        <svg class="w-6 h-6 text-gold" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L4 8.5L12 22L20 8.5L12 2ZM12 5.2L16.8 9.1L12 17.5L7.2 9.1L12 5.2Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="font-serif text-xl font-bold tracking-wide text-cream block leading-none">PIVOVAR RUBÍN</span>
+                        <span class="text-[10px] uppercase tracking-[0.22em] text-gold font-medium">Řemeslná tradice</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="#o-pivovaru" class="text-sm font-medium text-stone-200 hover:text-gold transition">O pivovaru</a>
+                    <a href="#nase-piva" class="text-sm font-medium text-stone-200 hover:text-gold transition">Naše piva</a>
+                    <a href="#hospoda-prohlidky" class="text-sm font-medium text-stone-200 hover:text-gold transition">Hospoda & Prohlídky</a>
+                    <a href="#aktuality" class="text-sm font-medium text-stone-200 hover:text-gold transition">Aktuality</a>
+                    <a href="#kontakt" class="text-sm font-medium text-stone-200 hover:text-gold transition">Kontakt</a>
+                </nav>
+
+                <!-- CTA Tlačítko & Mobilní menu přepínač -->
+                <div class="flex items-center gap-3">
+                    <button onclick="openReservationModal('hospoda')" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rubin hover:bg-rubin-light text-cream text-sm font-semibold border border-gold/30 transition shadow-md cursor-pointer">
+                        <span>Rezervace</span>
+                    </button>
+                    <button id="mobileMenuBtn" aria-label="Otevřít menu" class="md:hidden p-2.5 rounded-xl text-cream hover:bg-white/10 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobilní rozbalovací menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-slate-dark border-b border-white/10 px-4 pt-2 pb-6 space-y-2">
+            <a href="#o-pivovaru" class="mobile-link block px-4 py-3 rounded-xl text-base font-medium text-stone-200 hover:bg-white/5 hover:text-gold">O pivovaru</a>
+            <a href="#nase-piva" class="mobile-link block px-4 py-3 rounded-xl text-base font-medium text-stone-200 hover:bg-white/5 hover:text-gold">Naše piva</a>
+            <a href="#hospoda-prohlidky" class="mobile-link block px-4 py-3 rounded-xl text-base font-medium text-stone-200 hover:bg-white/5 hover:text-gold">Hospoda & Prohlídky</a>
+            <a href="#aktuality" class="mobile-link block px-4 py-3 rounded-xl text-base font-medium text-stone-200 hover:bg-white/5 hover:text-gold">Aktuality</a>
+            <a href="#kontakt" class="mobile-link block px-4 py-3 rounded-xl text-base font-medium text-stone-200 hover:bg-white/5 hover:text-gold">Kontakt</a>
+            <div class="pt-2">
+                <button onclick="openReservationModal('hospoda')" class="w-full py-3 rounded-xl bg-rubin text-cream font-semibold text-center">
+                    Rezervovat stůl / prohlídku
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== HERO SEKCE ==================== -->
+    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden bg-slate-dark">
+        <!-- Pozadí s obrázkem a rubínovo-břidlicovým překryvem -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1584225064785-c62a8b43d148?auto=format&fit=crop&w=1920&q=80" 
+                 onerror="this.src='https://placehold.co/1920x1080/521010/D4AF37?text=Pivovar+Rubin'" 
+                 alt="Čerstvě načepovaný rubínový ležák" 
+                 class="w-full h-full object-cover object-center opacity-45 scale-105">
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-dark via-slate-dark/85 to-rubin-dark/60"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-dark via-transparent to-slate-dark/50"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rubin/40 border border-gold/40 backdrop-blur-sm mb-6">
+                    <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
+                    <span class="text-xs font-semibold uppercase tracking-widest text-gold-light">Poctivé české řemeslné pivo</span>
+                </div>
+
+                <h1 class="font-serif text-4xl sm:text-5xl lg:text-7xl font-extrabold text-cream leading-[1.1] tracking-tight mb-6">
+                    Klenot českého pivovarnictví s <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold via-gold-amber to-gold-light">rubínovou duší</span>.
+                </h1>
+
+                <p class="text-lg sm:text-xl text-stone-300 leading-relaxed mb-10 max-w-2xl">
+                    Vaříme nefiltrovaná a nepasterizovaná piva z moravského sladu, žateckého chmele a měkké pramenité vody. Každý doušek je oslavou poctivého řemesla a trpělivého zrání v ležáckých tancích.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#nase-piva" class="px-8 py-4 rounded-xl bg-rubin hover:bg-rubin-light text-cream font-semibold text-center transition shadow-xl shadow-rubin/40 border border-gold/30 flex items-center justify-center gap-2">
+                        <span>Objevit naše piva</span>
+                        <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </a>
+                    <button onclick="openReservationModal('hospoda')" class="px-8 py-4 rounded-xl bg-white/10 hover:bg-white/15 backdrop-blur-md text-cream font-semibold text-center transition border border-white/20 flex items-center justify-center gap-2 cursor-pointer">
+                        <span>Rezervovat stůl v hospodě</span>
+                    </button>
+                </div>
+
+                <!-- Rychlé statistiky pod Hero -->
+                <div class="grid grid-cols-3 gap-6 mt-14 pt-8 border-t border-white/15 max-w-xl">
+                    <div>
+                        <span class="font-serif text-2xl sm:text-3xl font-bold text-gold block">100 %</span>
+                        <span class="text-xs sm:text-sm text-stone-400">Nefiltrované & živé</span>
+                    </div>
+                    <div>
+                        <span class="font-serif text-2xl sm:text-3xl font-bold text-gold block">42 dní</span>
+                        <span class="text-xs sm:text-sm text-stone-400">Zrání v ležáckém sklepě</span>
+                    </div>
+                    <div>
+                        <span class="font-serif text-2xl sm:text-3xl font-bold text-gold block">2 rmuty</span>
+                        <span class="text-xs sm:text-sm text-stone-400">Tradiční dekokční var</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== O PIVOVARU ==================== -->
+    <section id="o-pivovaru" class="py-20 lg:py-28 bg-cream relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                <!-- Vizuální koláž -->
+                <div class="lg:col-span-6 relative">
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
+                        <img src="https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&w=1000&q=80" 
+                             onerror="this.src='https://placehold.co/800x600/7A1C1C/FDFBF7?text=Medena+Varna+Rubin'" 
+                             alt="Měděná varna pivovaru Rubín" 
+                             class="w-full h-[420px] sm:h-[500px] object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-dark/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 right-6 text-cream">
+                            <p class="font-serif italic text-lg text-gold-light">„Pivo se nedá uspěchat. Dobré pivo potřebuje čas, poctivou surovinu a srdce sládka.“</p>
+                            <p class="text-xs uppercase tracking-wider text-stone-300 mt-1">— Ing. Marek Kovář, vrchní sládek Pivovaru Rubín</p>
+                        </div>
+                    </div>
+                    <!-- Dekorativní odznak -->
+                    <div class="hidden sm:flex flex-col items-center justify-center w-36 h-36 rounded-full bg-rubin text-cream border-4 border-cream shadow-xl absolute -bottom-6 -right-6 text-center p-3">
+                        <span class="text-xs uppercase tracking-widest text-gold font-semibold">Založeno</span>
+                        <span class="font-serif text-3xl font-bold leading-none my-1">2014</span>
+                        <span class="text-[11px] text-stone-200">České řemeslo</span>
+                    </div>
+                </div>
+
+                <!-- Textový příběh -->
+                <div class="lg:col-span-6">
+                    <span class="text-xs font-bold uppercase tracking-widest text-rubin block mb-2">Náš příběh a filozofie</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-dark leading-tight mb-6">
+                        Kde se snoubí úcta k tradici s odvahou tvořit výjimečné chutě
+                    </h2>
+                    <p class="text-slate-600 text-base sm:text-lg leading-relaxed mb-5">
+                        Pivovar Rubín vznikl z touhy vrátit na české stoly pivo takové, jaké bývalo za časů starých sládkovských mistrů – plné, bohaté na chuť a bez jakýchkoliv kompromisů. Naše vlajková loď, polotmavý <strong>Rubínový ležák 12°</strong>, získala své jméno podle nezaměnitelné sytě granátové barvy, které dosahujeme kombinací čtyř druhů moravských sladů.
+                    </p>
+                    <p class="text-slate-600 text-base leading-relaxed mb-8">
+                        Vaříme klasickým dvourmutovým způsobem na měděné varně. Neuspěcháme ani hlavní kvašení na otevřené spilce, ani následné dlouhé ležení v chladných sklepích, kde pivo přirozeně dozrává a získává sametový říz a hustou krémovou pěnu.
+                    </p>
+
+                    <!-- 3 pilíře surovin -->
+                    <div class="grid sm:grid-cols-3 gap-4">
+                        <div class="p-4 rounded-xl bg-cream-dark border border-stone-200/80">
+                            <div class="w-10 h-10 rounded-lg bg-gold/20 text-rubin flex items-center justify-center mb-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-serif font-bold text-slate-dark text-base mb-1">Moravský slad</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">Pečlivě vybrané humnové a karamelové slady z Hané.</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-cream-dark border border-stone-200/80">
+                            <div class="w-10 h-10 rounded-lg bg-gold/20 text-rubin flex items-center justify-center mb-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-serif font-bold text-slate-dark text-base mb-1">Žatecký chmel</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">Červeňák pro jemné aroma a odrůdy Sládek či Premiant pro říz.</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-cream-dark border border-stone-200/80">
+                            <div class="w-10 h-10 rounded-lg bg-gold/20 text-rubin flex items-center justify-center mb-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-serif font-bold text-slate-dark text-base mb-1">Pramenitá voda</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">Vlastní hlubinný vrt s ideální mineralizací pro české ležáky.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== NAŠE PIVA (KATALOG S FILTREM) ==================== -->
+    <section id="nase-piva" class="py-20 lg:py-28 bg-cream-dark border-y border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-bold uppercase tracking-widest text-rubin block mb-2">Stálá nabídka i sezónní speciály</span>
+                <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-dark mb-4">Naše řemeslná piva</h2>
+                <p class="text-slate-600 text-base sm:text-lg">
+                    Všechna naše piva jsou vařena bez pasterizace a filtrace, aby si uchovala maximum chuti, vůně a prospěšných látek. Vyberte si podle svého gusta.
+                </p>
+            </div>
+
+            <!-- Filtrační tlačítka -->
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-12" role="tablist" aria-label="Filtrovat piva podle druhu">
+                <button onclick="filterBeers('all')" data-filter="all" class="beer-filter-btn active px-5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer bg-rubin text-cream shadow-md">
+                    Všechna piva
+                </button>
+                <button onclick="filterBeers('polotmave')" data-filter="polotmave" class="beer-filter-btn px-5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer bg-white text-slate-700 hover:bg-stone-100 border border-stone-200">
+                    Polotmavá & Tmavá
+                </button>
+                <button onclick="filterBeers('svetle')" data-filter="svetle" class="beer-filter-btn px-5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer bg-white text-slate-700 hover:bg-stone-100 border border-stone-200">
+                    Světlé ležáky
+                </button>
+                <button onclick="filterBeers('special')" data-filter="special" class="beer-filter-btn px-5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer bg-white text-slate-700 hover:bg-stone-100 border border-stone-200">
+                    Speciály
+                </button>
+                <button onclick="filterBeers('nealko')" data-filter="nealko" class="beer-filter-btn px-5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer bg-white text-slate-700 hover:bg-stone-100 border border-stone-200">
+                    Nealkoholická
+                </button>
+            </div>
+
+            <!-- Mřížka pivních karet (vykresluje JS pro snadné filtrování a detail) -->
+            <div id="beerGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Karty budou vygenerovány JavaScriptem -->
+            </div>
+
+            <!-- Informace o prodeji s sebou -->
+            <div class="mt-14 p-6 sm:p-8 rounded-2xl bg-slate-dark text-cream flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl border border-gold/20">
+                <div class="flex items-center gap-4 text-center md:text-left">
+                    <div class="hidden sm:flex w-14 h-14 rounded-2xl bg-rubin items-center justify-center shrink-0 border border-gold/40">
+                        <svg class="w-7 h-7 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-serif text-xl font-bold text-gold">Pivo s sebou v lahvích i KEG sudech</h3>
+                        <p class="text-sm text-stone-300 mt-1">Všechna čepovaná piva si můžete zakoupit v pivovarské prodejně v 0,75l skleněných lahvích, 1l PET lahvích nebo v sudech (15l, 30l, 50l) včetně zapůjčení výčepního zařízení.</p>
+                    </div>
+                </div>
+                <button onclick="openReservationModal('sudy')" class="shrink-0 px-6 py-3 rounded-xl bg-gold hover:bg-gold-amber text-slate-dark font-bold text-sm transition cursor-pointer">
+                    Objednat sud / výčep
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== PIVOVARSKÁ HOSPODA A PROHLÍDKY ==================== -->
+    <section id="hospoda-prohlidky" class="py-20 lg:py-28 bg-slate-dark text-cream relative overflow-hidden">
+        <!-- Jemný dekorativní prvek -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-rubin/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-bold uppercase tracking-widest text-gold block mb-2">Zažijte pivovar všemi smysly</span>
+                <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-cream mb-4">Pivovarská hospoda & Exkurze</h2>
+                <p class="text-stone-300 text-base sm:text-lg">
+                    Ochutnejte naše pivo přímo u zdroje – z tanku do podchlazeného půllitru – nebo nahlédněte pod pokličku sládkovského řemesla během komentované prohlídky.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 lg:gap-10">
+                <!-- Karta 1: Pivovarská hospoda -->
+                <div class="bg-slate-charcoal rounded-2xl overflow-hidden border border-white/10 flex flex-col justify-between shadow-2xl group">
+                    <div>
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1000&q=80" 
+                                 onerror="this.src='https://placehold.co/800x500/262626/D4AF37?text=Pivovarska+Hospoda'" 
+                                 alt="Interiér Pivovarské hospody Rubín" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <div class="absolute top-4 left-4 px-3 py-1 rounded-lg bg-rubin text-cream text-xs font-semibold border border-gold/30">
+                                Tankové pivo & Česká kuchyně
+                            </div>
+                        </div>
+                        <div class="p-6 sm:p-8">
+                            <h3 class="font-serif text-2xl sm:text-3xl font-bold text-cream mb-3">Pivovarská hospoda U Rubínu</h3>
+                            <p class="text-stone-300 text-sm sm:text-base leading-relaxed mb-6">
+                                Na čepu máme vždy kompletní sortiment našich piv ošetřených s maximální péčí. K tomu podáváme poctivou českou kuchyni – pomalu tažená hovězí líčka na Rubínovém ležáku, domácí utopence, nakládaný hermelín či pečené vepřové koleno.
+                            </p>
+                            <ul class="space-y-2.5 text-sm text-stone-300 mb-8">
+                                <li class="flex items-center gap-2.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                                    Kapacita 85 míst uvnitř + zastřešená letní zahrádka (60 míst)
+                                </li>
+                                <li class="flex items-center gap-2.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                                    Polední menu každý všední den od 11:00 do 14:30
+                                </li>
+                                <li class="flex items-center gap-2.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                                    Možnost uzavřených oslav, firemních večírků a rautů
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="px-6 sm:px-8 pb-8">
+                        <button onclick="openReservationModal('hospoda')" class="w-full py-3.5 px-6 rounded-xl bg-rubin hover:bg-rubin-light text-cream font-semibold transition shadow-lg border border-gold/30 cursor-pointer">
+                            Rezervovat stůl v hospodě
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Karta 2: Prohlídky pivovaru -->
+                <div class="bg-slate-charcoal rounded-2xl overflow-hidden border border-white/10 flex flex-col justify-between shadow-2xl group">
+                    <div>
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1575037614876-c38a4d44f5b8?auto=format&fit=crop&w=1000&q=80" 
+                                 onerror="this.src='https://placehold.co/800x500/7A1C1C/FDFBF7?text=Prohlidka+Pivovaru'" 
+                                 alt="Degustace piva během prohlídky pivovaru" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <div class="absolute top-4 left-4 px-3 py-1 rounded-lg bg-gold text-slate-dark text-xs font-bold">
+                                Včetně řízené degustace
+                            </div>
+                        </div>
+                        <div class="p-6 sm:p-8">
+                            <h3 class="font-serif text-2xl sm:text-3xl font-bold text-cream mb-3">Exkurze s degustací ze sklepů</h3>
+                            <p class="text-stone-300 text-sm sm:text-base leading-relaxed mb-6">
+                                Provedeme vás celým procesem výroby piva – od šrotování sladu přes měděnou varnu a otevřenou spilku až po ležácké sklepy, kde ochutnáte mladé i vyzrálé pivo přímo z tanku.
+                            </p>
+                            <div class="grid grid-cols-2 gap-4 p-4 rounded-xl bg-slate-dark/70 border border-white/5 mb-8">
+                                <div>
+                                    <span class="text-xs text-stone-400 block">Délka prohlídky</span>
+                                    <span class="font-semibold text-gold">cca 75 minut</span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-stone-400 block">Cena vstupného</span>
+                                    <span class="font-semibold text-gold">290 Kč / osoba</span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-stone-400 block">Degustace</span>
+                                    <span class="font-semibold text-cream text-xs">4 vzorky piva + suvenýr</span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-stone-400 block">Termíny</span>
+                                    <span class="font-semibold text-cream text-xs">Pá–Ne nebo dle domluvy</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-6 sm:px-8 pb-8">
+                        <button onclick="openReservationModal('exkurze')" class="w-full py-3.5 px-6 rounded-xl bg-gold hover:bg-gold-amber text-slate-dark font-bold transition shadow-lg cursor-pointer">
+                            Rezervovat prohlídku pivovaru
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== AKTUALITY / AKCE ==================== -->
+    <section id="aktuality" class="py-20 lg:py-28 bg-cream">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-rubin block mb-2">Co se u nás děje</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-dark">Aktuality & Pivovarské akce</h2>
+                </div>
+                <p class="text-slate-600 text-sm max-w-md">
+                    Sledujte narážení sezónních speciálů, pivovarské slavnosti a gastronomické víkendy v naší hospodě.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Aktualita 1 -->
+                <article class="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                    <div>
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=800&q=80" 
+                                 onerror="this.src='https://placehold.co/600x400/7A1C1C/D4AF37?text=Zimni+Granatovy+Special'" 
+                                 alt="Zimní Granátový speciál 14°" 
+                                 class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 px-3 py-1 rounded-lg bg-slate-dark/85 text-gold text-xs font-semibold">
+                                Na čepu
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <time class="text-xs font-medium text-rubin uppercase tracking-wider">Listopad / Prosinec</time>
+                            <h3 class="font-serif text-xl font-bold text-slate-dark mt-1 mb-2">Narážíme Zimní Granátový speciál 14°</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                Silný, hřejivý polotmavý speciál s tóny praženého karamelu, sušených švestek a jemnou chmelovou linkou. Ideální společník pro chladné večery.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6">
+                        <a href="#nase-piva" class="text-sm font-semibold text-rubin hover:text-rubin-light inline-flex items-center gap-1">
+                            Zobrazit parametry piva →
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Aktualita 2 -->
+                <article class="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                    <div>
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80" 
+                                 onerror="this.src='https://placehold.co/600x400/521010/FDFBF7?text=Pivovarske+Hody'" 
+                                 alt="Tradiční pivovarské zabijačkové hody" 
+                                 class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 px-3 py-1 rounded-lg bg-rubin text-cream text-xs font-semibold">
+                                Akce v hospodě
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <time class="text-xs font-medium text-rubin uppercase tracking-wider">12. – 14. prosince</time>
+                            <h3 class="font-serif text-xl font-bold text-slate-dark mt-1 mb-2">Předvánoční pivovarské hody</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                Přijďte na poctivou zabijačku, čerstvé jitrnice, jelítka, prdelačku a k tomu nefiltrovanou jedenáctku nebo rubínovou dvanáctku přímo z tanku.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6">
+                        <button onclick="openReservationModal('hospoda')" class="text-sm font-semibold text-rubin hover:text-rubin-light inline-flex items-center gap-1 cursor-pointer">
+                            Rezervovat místo včas →
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Aktualita 3 -->
+                <article class="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                    <div>
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=800&q=80" 
+                                 onerror="this.src='https://placehold.co/600x400/262626/D4AF37?text=Darkove+Poukazky'" 
+                                 alt="Dárkové sady a poukazy Pivovaru Rubín" 
+                                 class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 px-3 py-1 rounded-lg bg-gold text-slate-dark text-xs font-bold">
+                                Tip na dárek
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <time class="text-xs font-medium text-rubin uppercase tracking-wider">Celoročně v prodeji</time>
+                            <h3 class="font-serif text-xl font-bold text-slate-dark mt-1 mb-2">Dárkové kazety a poukazy na exkurzi</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                Potěšte milovníky poctivého piva dárkovým balením čtyř našich speciálů s originálním sklem Rubín nebo poukazem na prohlídku pivovaru pro dva.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6">
+                        <button onclick="openReservationModal('exkurze')" class="text-sm font-semibold text-rubin hover:text-rubin-light inline-flex items-center gap-1 cursor-pointer">
+                            Poptat dárkový poukaz →
+                        </button>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== PATIČKA & KONTAKTY ==================== -->
+    <footer id="kontakt" class="bg-slate-dark text-stone-300 border-t border-gold/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <!-- Sloupec 1: Značka -->
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-9 h-9 rounded-xl bg-rubin border border-gold/40 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2L4 8.5L12 22L20 8.5L12 2ZM12 5.2L16.8 9.1L12 17.5L7.2 9.1L12 5.2Z"/>
+                            </svg>
+                        </div>
+                        <span class="font-serif text-xl font-bold text-cream">PIVOVAR RUBÍN</span>
+                    </div>
+                    <p class="text-sm text-stone-400 leading-relaxed mb-4">
+                        Český řemeslný pivovar s vlastní pivovarskou hospodou. Vaříme poctivé nefiltrované pivo s respektem k tradičním recepturám.
+                    </p>
+                    <p class="text-xs text-stone-500">
+                        Pijte s rozumem. Zákaz prodeje alkoholických nápojů osobám mladším 18 let.
+                    </p>
+                </div>
+
+                <!-- Sloupec 2: Kontakt -->
+                <div>
+                    <h4 class="font-serif text-lg font-bold text-gold mb-4">Kde nás najdete</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2.5">
+                            <svg class="w-5 h-5 text-rubin-light shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <span>Sládkova 412/18,<br>301 00 Plzeň – Jižní Předměstí</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <svg class="w-5 h-5 text-rubin-light shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                            </svg>
+                            <a href="tel:+420377123456" class="hover:text-gold transition">+420 377 123 456</a>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <svg class="w-5 h-5 text-rubin-light shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            <a href="mailto:info@pivovarrubin.cz" class="hover:text-gold transition">info@pivovarrubin.cz</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Sloupec 3: Otevírací doba -->
+                <div>
+                    <h4 class="font-serif text-lg font-bold text-gold mb-4">Otevírací doba hospody</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex justify-between border-b border-white/10 pb-1.5">
+                            <span>Pondělí – Čtvrtek</span>
+                            <span class="text-cream font-medium">11:00 – 22:00</span>
+                        </li>
+                        <li class="flex justify-between border-b border-white/10 pb-1.5">
+                            <span>Pátek – Sobota</span>
+                            <span class="text-cream font-medium">11:00 – 24:00</span>
+                        </li>
+                        <li class="flex justify-between pb-1.5">
+                            <span>Neděle</span>
+                            <span class="text-cream font-medium">11:30 – 21:00</span>
+                        </li>
+                    </ul>
+                    <p class="text-xs text-stone-400 mt-3">
+                        Pivovarská prodejna lahví a sudů otevřena denně od 10:00 do 20:00.
+                    </p>
+                </div>
+
+                <!-- Sloupec 4: Rychlé akce -->
+                <div>
+                    <h4 class="font-serif text-lg font-bold text-gold mb-4">Rychlá rezervace</h4>
+                    <p class="text-sm text-stone-400 mb-4">
+                        Plánujete posezení s přáteli, prohlídku varny nebo soukromou oslavu?
+                    </p>
+                    <div class="space-y-2.5">
+                        <button onclick="openReservationModal('hospoda')" class="w-full py-2.5 px-4 rounded-xl bg-rubin hover:bg-rubin-light text-cream text-sm font-semibold transition cursor-pointer">
+                            Rezervace stolu
+                        </button>
+                        <button onclick="openReservationModal('exkurze')" class="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-cream text-sm font-medium transition cursor-pointer">
+                            Rezervace exkurze
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
+                <p>&copy; 2026 Pivovar Rubín s.r.o. Všechna práva vyhrazena.</p>
+                <div class="flex items-center gap-6">
+                    <a href="#o-pivovaru" class="hover:text-stone-300 transition">O nás</a>
+                    <a href="#nase-piva" class="hover:text-stone-300 transition">Katalog piv</a>
+                    <a href="#hospoda-prohlidky" class="hover:text-stone-300 transition">Exkurze</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== REZERVAČNÍ MODÁLNÍ OKNO ==================== -->
+    <div id="reservationModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-dark/85 backdrop-blur-sm p-4 overflow-y-auto">
+        <div class="bg-cream rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-stone-200 relative my-8">
+            <!-- Zavřít -->
+            <button onclick="closeReservationModal()" aria-label="Zavřít okno" class="absolute top-5 right-5 p-2 rounded-xl text-slate-500 hover:bg-stone-200/70 hover:text-slate-dark transition cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <span class="text-xs font-bold uppercase tracking-widest text-rubin">Online rezervace</span>
+            <h3 id="modalTitle" class="font-serif text-2xl sm:text-3xl font-bold text-slate-dark mt-1 mb-2">Rezervace stolu v hospodě</h3>
+            <p class="text-sm text-slate-600 mb-6">Vyplňte prosím údaje níže. Potvrzení vám obratem zašleme na e-mail či telefon.</p>
+
+            <form id="reservationForm" onsubmit="handleReservationSubmit(event)" class="space-y-4">
+                <!-- Typ rezervace -->
+                <div>
+                    <label for="resType" class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">Typ požadavku</label>
+                    <select id="resType" name="resType" class="w-full px-4 py-3 rounded-xl bg-white border border-stone-300 text-slate-dark text-sm focus:outline-none focus:border-rubin focus:ring-2 focus:ring-rubin/20">
+                        <option value="hospoda">Rezervace stolu v Pivovarské hospodě</option>
+                        <option value="exkurze">Komentovaná prohlídka pivovaru s degustací</option>
+                        <option value="sudy">Objednávka sudového piva a výčepního zařízení</option>
+                    </select>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="resName" class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">Jméno a příjmení *</label>
+                        <input type="text" id="resName" required placeholder="Jan Novák" class="w-full px-4 py-3 rounded-xl bg-white border border-stone-300 text-slate-dark text-sm focus:outline-none focus:border-rubin focus:ring-2 focus:ring-rubin/20">
+                    </div>
+                    <div>
+                        <label for="resPhone" class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">Telefon *</label>
+                        <input type="tel" id="resPhone" required placeholder="+420 777 000 000" class="w-full px-4 py-3 rounded-xl bg-white border border-stone-300 text-slate-dark text-sm focus:outline-none focus:border-rubin focus:ring-2 focus:ring-rubin/20">
+                    </div>
+                </div>
+
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <div>
+                        <label for="resDate" class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">Datum *</label>
+                        <input type="date" id="resDate" required class="w-full px-4 py-3 rounded-xl bg-white border border-stone-300 text-slate-dark text-sm focus:outline-none focus:border-rubin focus:ring-2 focus:ring-rubin/20">
+                    </div>
+                    <div>
+                        <label for="resTime" class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">Čas *</label>
+                        <input type="time" id="resTime" value="18:00" required class="w-full px-4 py-3 rounded-xl bg-white border border-stone-300 text-slate-dark text-sm focus:outline-none focus:border-rubin focus:ring-2 focus:ring-rubin/20">
+                    </div>
+                    <div>
+                        <label for="resGuests" class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">Počet osob</label>
+                        <input type="number" id="resGuests" min="1" max="50" value="4" class="w-full px-4 py-3 rounded-xl bg-white border border-stone-300 text-slate-dark text-sm focus:outline-none focus:border-rubin focus:ring-2 focus:ring-rubin/20">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="resNote" class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">Poznámka (nepovinné)</label>
+                    <textarea id="resNote" rows="2" placeholder="Např. přání stolu na zahrádce, velikost sudu, alergie..." class="w-full px-4 py-3 rounded-xl bg-white border border-stone-300 text-slate-dark text-sm focus:outline-none focus:border-rubin focus:ring-2 focus:ring-rubin/20"></textarea>
+                </div>
+
+                <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                    <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-rubin hover:bg-rubin-light text-cream font-semibold text-sm transition shadow-lg cursor-pointer">
+                        Odeslat rezervaci
+                    </button>
+                    <button type="button" onclick="closeReservationModal()" class="w-full sm:w-auto py-3.5 px-6 rounded-xl bg-cream-dark hover:bg-stone-200 text-slate-700 font-medium text-sm transition cursor-pointer">
+                        Zrušit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT LOGIKA ==================== -->
+    <script>
+        // 1. Databáze piv Pivovaru Rubín
+        const beersData = [
+            {
+                id: 'rubinovy-lezak-12',
+                name: 'Rubínový ležák 12°',
+                subtitle: 'Vlajková loď pivovaru • Polotmavý ležák',
+                category: 'polotmave',
+                badge: 'Nejprodávanější',
+                badgeColor: 'bg-rubin text-cream',
+                glassColor: '#8B1E1E',
+                epm: '12,2 %',
+                abv: '5,0 %',
+                ibu: '34 IBU',
+                description: 'Náš ikonický polotmavý ležák sytě rubínové barvy. Kombinace čtyř druhů sladů dává pivu plné karamelovo-chlebové tělo, které je dokonale vyváženo ušlechtilou hořkostí Žateckého poloraného červeňáku.',
+                pairing: 'Pečená kachna, hovězí líčka, vyzrálé sýry'
+            },
+            {
+                id: 'zlaty-rubin-11',
+                name: 'Zlatý Rubín 11°',
+                subtitle: 'Světlý ležák • Nefiltrovaný',
+                category: 'svetle',
+                badge: 'Klasika',
+                badgeColor: 'bg-gold text-slate-dark',
+                glassColor: '#E09F3E',
+                epm: '11,3 %',
+                abv: '4,6 %',
+                ibu: '36 IBU',
+                description: 'Poctivá česká jedenáctka s vysokou pitelností, zářivě zlatou barvou a sněhobílou hustou pěnou. Vařeno na dva rmuty z plzeňského sladu a trojitého chmelení s příjemným řízem.',
+                pairing: 'Svíčková na smetaně, vepřový řízek, nakládaný hermelín'
+            },
+            {
+                id: 'granatovy-special-14',
+                name: 'Granátový speciál 14°',
+                subtitle: 'Polotmavý silný speciál',
+                category: 'special',
+                badge: 'Speciál sládka',
+                badgeColor: 'bg-slate-dark text-gold',
+                glassColor: '#5C1216',
+                epm: '14,4 %',
+                abv: '6,1 %',
+                ibu: '38 IBU',
+                description: 'Silnější, dlouze zrající speciál s hlubokou granátovou jiskrou. V chuti se prolínají tóny sušeného ovoce, pražených oříšků a karamelu s hřejivým dozvukem.',
+                pairing: 'Zvěřina, grilované steaky, hořká čokoláda'
+            },
+            {
+                id: 'rubin-desitka-10',
+                name: 'Rubínová Desítka 10°',
+                subtitle: 'Světlé výčepní pivo',
+                category: 'svetle',
+                badge: 'Osvěžující',
+                badgeColor: 'bg-amber-100 text-amber-900',
+                glassColor: '#F0B449',
+                epm: '10,2 %',
+                abv: '4,1 %',
+                ibu: '30 IBU',
+                description: 'Lehké, šťavnaté a mimořádně pitelné výčepní pivo, které si však zachovává plnost díky nefiltrované receptuře. Skvělé k uhašení žízně po výletě či práci.',
+                pairing: 'Utopenci, bramboráky, grilované klobásky'
+            },
+            {
+                id: 'cerny-kamen-13',
+                name: 'Černý Kámen 13°',
+                subtitle: 'Tmavý ležák',
+                category: 'polotmave',
+                badge: 'Tmavé',
+                badgeColor: 'bg-stone-800 text-cream',
+                glassColor: '#261714',
+                epm: '13,1 %',
+                abv: '5,3 %',
+                ibu: '32 IBU',
+                description: 'Sametově hebký tmavý ležák bez přehnané sladkosti. Pražené a barevné slady přinášejí aroma čerstvě pražené kávy a kakaa, zakončené suchým chmelovým dozvukem.',
+                pairing: 'Pečené koleno, žebra na medu, čokoládové dezerty'
+            },
+            {
+                id: 'nealko-rubin',
+                name: 'Nealko Rubín',
+                subtitle: 'Světlé nealkoholické pivo',
+                category: 'nealko',
+                badge: 'Pro řidiče',
+                badgeColor: 'bg-emerald-800 text-cream',
+                glassColor: '#E5AE52',
+                epm: '6,5 %',
+                abv: 'max. 0,5 %',
+                ibu: '28 IBU',
+                description: 'Plnohodnotné nealkoholické pivo vařené speciálním kvasným postupem. Žádná sladká limonáda – nabízí autentickou chmelovou vůni a příjemnou hořkost.',
+                pairing: 'Lehké saláty, těstoviny, sportovní odpoledne'
+            }
+        ];
+
+        // 2. Vykreslení karet piv
+        function renderBeers(filter = 'all') {
+            const grid = document.getElementById('beerGrid');
+            if (!grid) return;
+
+            const filtered = filter === 'all' 
+                ? beersData 
+                : beersData.filter(beer => beer.category === filter);
+
+            grid.innerHTML = filtered.map(beer => `
+                <article class="bg-white rounded-2xl border border-stone-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+                    <div>
+                        <!-- Horní vizuální lišta se sklenicí / barvou piva -->
+                        <div class="p-6 pb-4 bg-gradient-to-b from-cream to-white border-b border-stone-100 relative">
+                            <div class="flex items-start justify-between gap-3 mb-4">
+                                <span class="px-3 py-1 rounded-lg text-xs font-bold tracking-wide ${beer.badgeColor}">
+                                    ${beer.badge}
+                                </span>
+                                <!-- Vizuální indikátor barvy piva (EBC) -->
+                                <div class="flex items-center gap-2" title="Odstín piva">
+                                    <span class="text-[11px] text-slate-400 font-medium">Barva</span>
+                                    <span class="w-6 h-6 rounded-full border-2 border-white shadow-md inline-block" style="background-color: ${beer.glassColor};"></span>
+                                </div>
+                            </div>
+
+                            <h3 class="font-serif text-2xl font-bold text-slate-dark group-hover:text-rubin transition">
+                                ${beer.name}
+                            </h3>
+                            <p class="text-xs font-medium text-slate-500 mt-1">${beer.subtitle}</p>
+                        </div>
+
+                        <!-- Parametry piva (EPM, Alk., IBU) -->
+                        <div class="grid grid-cols-3 divide-x divide-stone-200 bg-cream-dark/60 border-b border-stone-200/80 py-3 text-center">
+                            <div>
+                                <span class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Stupňovitost</span>
+                                <span class="font-serif font-bold text-slate-dark text-sm sm:text-base">${beer.epm}</span>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Alkohol</span>
+                                <span class="font-serif font-bold text-rubin text-sm sm:text-base">${beer.abv}</span>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Hořkost</span>
+                                <span class="font-serif font-bold text-slate-dark text-sm sm:text-base">${beer.ibu}</span>
+                            </div>
+                        </div>
+
+                        <!-- Popis chuti -->
+                        <div class="p-6">
+                            <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                                ${beer.description}
+                            </p>
+                            <div class="pt-3 border-t border-stone-100">
+                                <span class="text-xs font-semibold text-slate-700 block mb-0.5">Doporučujeme k jídlu:</span>
+                                <span class="text-xs text-slate-500">${beer.pairing}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-6 pb-6">
+                        <button onclick="openReservationModal('hospoda')" class="w-full py-2.5 px-4 rounded-xl bg-cream-dark hover:bg-rubin text-slate-800 hover:text-cream font-semibold text-xs uppercase tracking-wider transition cursor-pointer">
+                            Ochutnat na čepu v hospodě
+                        </button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // 3. Filtrování piv
+        function filterBeers(category) {
+            // Aktualizace aktivního tlačítka
+            document.querySelectorAll('.beer-filter-btn').forEach(btn => {
+                if (btn.dataset.filter === category) {
+                    btn.className = 'beer-filter-btn active px-5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer bg-rubin text-cream shadow-md';
+                } else {
+                    btn.className = 'beer-filter-btn px-5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer bg-white text-slate-700 hover:bg-stone-100 border border-stone-200';
+                }
+            });
+
+            renderBeers(category);
+        }
+
+        // 4. Ověření věku 18+
+        function confirmAge(isAdult) {
+            const modal = document.getElementById('ageGateModal');
+            const warning = document.getElementById('ageWarningMsg');
+
+            if (isAdult) {
+                try {
+                    sessionStorage.setItem('rubin_age_verified', 'true');
+                } catch (e) {
+                    // Fallback pokud je úložiště blokováno
+                }
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            } else {
+                warning.classList.remove('hidden');
+            }
+        }
+
+        // 5. Rezervační modal ovládání
+        function openReservationModal(type = 'hospoda') {
+            const modal = document.getElementById('reservationModal');
+            const select = document.getElementById('resType');
+            const title = document.getElementById('modalTitle');
+
+            if (select) {
+                select.value = type;
+            }
+
+            if (title) {
+                if (type === 'exkurze') {
+                    title.textContent = 'Rezervace prohlídky pivovaru';
+                } else if (type === 'sudy') {
+                    title.textContent = 'Objednávka sudového piva';
+                } else {
+                    title.textContent = 'Rezervace stolu v hospodě';
+                }
+            }
+
+            // Nastavení výchozího data na zítřek
+            const dateInput = document.getElementById('resDate');
+            if (dateInput && !dateInput.value) {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                dateInput.value = tomorrow.toISOString().split('T')[0];
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeReservationModal() {
+            const modal = document.getElementById('reservationModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Dynamická změna nadpisu modalu při změně selectu
+        document.getElementById('resType')?.addEventListener('change', function(e) {
+            const title = document.getElementById('modalTitle');
+            if (e.target.value === 'exkurze') {
+                title.textContent = 'Rezervace prohlídky pivovaru';
+            } else if (e.target.value === 'sudy') {
+                title.textContent = 'Objednávka sudového piva';
+            } else {
+                title.textContent = 'Rezervace stolu v hospodě';
+            }
+        });
+
+        // Odeslání rezervačního formuláře s vlastní notifikací (bez alert())
+        function handleReservationSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('resName').value;
+            const typeSelect = document.getElementById('resType');
+            const typeLabel = typeSelect.options[typeSelect.selectedIndex].text;
+            const date = document.getElementById('resDate').value;
+
+            closeReservationModal();
+            event.target.reset();
+
+            showToast(
+                'Rezervace přijata!',
+                `Děkujeme, ${name}. Váš požadavek (${typeLabel}) na termín ${date} jsme úspěšně zaevidovali.`
+            );
+        }
+
+        // 6. Vlastní Toast notifikace
+        function showToast(title, message) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 5500);
+        }
+
+        // 7. Mobilní navigace a inicializace po načtení stránky
+        window.addEventListener('DOMContentLoaded', () => {
+            // Kontrola předchozího ověření věku v relaci
+            try {
+                if (sessionStorage.getItem('rubin_age_verified') === 'true') {
+                    const modal = document.getElementById('ageGateModal');
+                    if (modal) modal.style.display = 'none';
+                }
+            } catch (e) {}
+
+            // Vykreslení piv
+            renderBeers('all');
+
+            // Mobilní menu přepínání
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            mobileBtn?.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Zavření mobilního menu po kliknutí na odkaz
+            document.querySelectorAll('.mobile-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // Zavření rezervačního modalu kliknutím mimo obsah
+            document.getElementById('reservationModal')?.addEventListener('click', (e) => {
+                if (e.target.id === 'reservationModal') {
+                    closeReservationModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
